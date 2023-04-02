@@ -1,1 +1,101 @@
+@import url("https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Nunito+Sans:wght@400;700&display=swap");
+html {
+  height: 100%;
+}
+body {
+  background-image: linear-gradient(
+    to bottom,
+    #100324,
+    #1a112f,
+    #28193a,
+    #352146,
+    #442a51
+  );
+  color: #ffffff;
+  font-family: Merriweather;
+  min-height: 100%;
+}
+
+.container {
+  max-width: 992px;
+}
+button {
+  font-family: Nunito Sans;
+}
+.btn-primary {
+  background-color: #100324;
+  border: 2px solid;
+}
+.btn-primary:hover {
+  background-color: #442a51;
+  border: 2px solid;
+}
+.btn-primary:focus {
+  background-color: #442a51;
+  border: 2px solid;
+}
+a {
+  color: #20b6a5;
+}
+a:hover {
+  color: #f8bd4f;
+}
+a:focus {
+  color: #f8bd4f;
+}
+.navbar-brand {
+  font-family: Nunito Sans;
+  color: #ffffff;
+  font-size: 2em;
+}
+.navbar-brand:hover {
+  color: #ffffff;
+}
+.navbar-brand:focus {
+  color: #ffffff;
+}
+h1 {
+  margin-bottom: 1em;
+  font-family: Nunito Sans;
+}
+h2,
+h3 {
+  font-family: Nunito Sans;
+}
+footer {
+  margin-top: 3em;
+  border-top: 0.5px solid;
+  padding: 2em 0;  
+}
+.navbar {
+  padding: 1.5em;
+  margin-bottom: 3em;
+  border-bottom: solid 0.5px;
+}
+
+#btn-get-tarot-bot {
+  float: right;
+}
+img.arcana {
+  width: 150px;
+  margin-bottom: 2.5em;
+}
+img.arcana:hover {
+  opacity: 0.5;
+}
+
+@media (max-width: 988px) {
+  img.arcana {
+    width: 120px;
+  }
+}
+
+@media (max-width: 720px) {
+  img.arcana {
+    width: 150px;
+  }
+  .container {
+    max-width: 680px;
+  }
+}
 

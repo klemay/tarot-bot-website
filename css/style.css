@@ -20,12 +20,10 @@ body {
 .container {
   max-width: 992px;
 }
-button {
-  font-family: Nunito Sans;
-}
 .btn-primary {
   background-color: #100324;
   border: 2px solid;
+  font-family: Nunito Sans;
 }
 .btn-primary:hover {
   background-color: #442a51;

@@ -1,0 +1,9 @@
+body {
+  height: 100%;
+}
+img.arcana {
+  margin-bottom: 0.25em;
+}
+p.arcana-label {
+  margin-bottom: 2em;
+}

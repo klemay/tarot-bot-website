@@ -1,0 +1,37 @@
+.breadcrumbs {
+  font-family: Nunito Sans;
+  margin-bottom: 2em;
+}
+.breadcrumbs a {
+  text-decoration: underline;
+}
+h2 {
+  margin-top: -1em;
+  margin-bottom: 1em;
+}
+.bold {
+  font-weight: 700;
+}
+.row {
+  margin-bottom: 2em;
+}
+.img-fluid {
+  max-width: 150px;
+}
+
+footer {
+  border-top: 0.5px solid;
+  padding: 2em 0;
+  margin-top: 2em;
+
+}
+@media (min-width:750px) {
+  .main {
+    height: 100vh
+  }
+}
+@media (max-width: 574px) {
+  .img-fluid {
+    margin-bottom: 1em;
+  }
+}

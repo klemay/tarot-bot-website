@@ -1,0 +1,17 @@
+.btn-draw {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+h1 {
+  margin-bottom: 0.5em;
+}
+#cardBack {
+  margin-top: 2em;
+  width: 300px;
+}
+@media (max-width: 574px) {
+  .explainer {
+    text-align: center;
+  }
+}

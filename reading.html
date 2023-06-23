@@ -76,7 +76,7 @@
        </div>
    <div class="row">
      <div class="col justify-content-center d-flex">
-     <button type="button" class="btn btn-primary btn-large btn-block btn-draw" id="drawCard">Draw a card</button>
+     <button type="button" class="btn btn-primary btn-large btn-block btn-draw" id="drawCard" onclick="randomize()">Draw a card</button>
      </div>
    </div>
    <div class="row justify-content-center">
@@ -85,6 +85,60 @@
      </div>
      </div>
  </div>
+
+ <script>
+function randomize()
+{
+  fetch( 'https://tarot-bot-api.vercel.app/random?images=tb' )
+    .then( ( response ) => response.json() )
+    .then( ( data ) => 
+    {
+        let card = data.response;
+
+        let explainerElement = document.getElementById( "explainerText" );
+        explainerElement.style.display = 'none';
+
+        let cardBackElement = document.getElementById( "cardBack" );
+        cardBackElement.style.display = 'none';
+
+        let cardNameElement = document.getElementById( "cardName" );
+        cardNameElement.innerHTML = card.title + ( card.reversed ? " (in reverse)" : "" );
+        cardNameElement.style.display = 'block';
+
+        let cardEmojiElement = document.getElementById( "cardEmoji" );
+        cardEmojiElement.innerHTML = card.emoji;
+        cardEmojiElement.style.display = 'block';
+
+        let cardArtElement = document.getElementById( "cardArt" );
+        cardArtElement.src = card.image;
+        cardArtElement.alt = card.description;
+        cardArtElement.style.display = 'inline-block';
+
+        let keywordsElement = document.getElementById( "keywords" );
+        keywordsElement.innerHTML = card.keywords;
+        keywordsElement.style.display = 'block';
+
+        let descriptionElement = document.getElementById( "description" );
+        descriptionElement.innerHTML = card.description;
+        descriptionElement.style.display = 'block';
+
+        let question1Element = document.getElementById( "question1" );
+        question1Element.innerHTML = card.questions[0];
+        question1Element.style.display = 'list-item';
+
+        let question2Element = document.getElementById( "question2" );
+        question2Element.innerHTML = card.questions[1];
+        question2Element.style.display = 'list-item';
+
+        let question3Element = document.getElementById( "question3" );
+        question3Element.innerHTML = card.questions[2];
+        question3Element.style.display = 'list-item';
+
+        let cardContentElement = document.getElementById( "cardContent" );
+        cardContentElement.style.display = 'block';
+    });
+}
+ </script>
 
 
 <!-- Footer -->

@@ -5,6 +5,7 @@
 
 <!-- Meta tags -->
 <meta charset="utf-8">
+<meta name="viewport" content="initial-scale=1">
 <meta name="description" content="#">
 <meta name="keywords" content="#">
 
@@ -91,7 +92,7 @@ function randomize()
 {
   fetch( 'https://tarot-bot-api.vercel.app/random?images=tb' )
     .then( ( response ) => response.json() )
-    .then( ( data ) => 
+    .then( ( data ) =>
     {
         let card = data.response;
 

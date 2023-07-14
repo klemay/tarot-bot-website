@@ -33,6 +33,15 @@ body {
   background-color: #442a51;
   border: 2px solid;
 }
+.banner {
+  background-color: #16161d;
+  margin-top: -3em;
+  margin-bottom: 2em;
+  padding-top: 16px;
+}
+.banner-text {
+  padding-bottom: 16px;
+}
 a {
   color: #20b6a5;
 }

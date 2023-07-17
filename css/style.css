@@ -81,6 +81,14 @@ footer {
   border-bottom: solid 0.5px;
 }
 
+.breadcrumbs {
+  font-family: Nunito Sans;
+  margin-bottom: 2em;
+}
+.breadcrumbs a {
+  text-decoration: underline;
+}
+
 #btn-get-tarot-bot {
   float: right;
 }

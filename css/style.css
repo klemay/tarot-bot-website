@@ -70,6 +70,9 @@ h2,
 h3 {
   font-family: Nunito Sans;
 }
+h3 {
+  font-size: 1.25em;
+}
 footer {
   margin-top: 3em;
   border-top: 0.5px solid;

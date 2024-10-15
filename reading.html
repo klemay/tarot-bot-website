@@ -55,13 +55,20 @@
 </head>
 <body>
   <!-- Navigation -->
- <nav class="navbar">
-   <div class="container">
-     <a class="navbar-brand" href="https://tarotbot.cards/explore">Tarot Bot</a>
-     <a href="https://tarotbot.cards/install" class="btn btn-primary" id="btn-get-tarot-bot">Get a Reading</a>
-
-   </div>
- </nav>
+<nav class="navbar">
+  <div class="container">
+    <a class="navbar-brand" href="https://tarotbot.cards">Tarot Bot</a>
+    <div class="dropdown">
+      <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Menu</button>
+    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-sm-start dropdown-menu-md-start dropdown-lg-start">
+    <li><a class="dropdown-item" href="https://tarotbot.cards">Home</a></li>
+    <li><a class="dropdown-item" href="https://tarotbot.cards/install">Install Tarot Bot</a></li>
+    <li><a class="dropdown-item" href="https://tarotbot.cards/reading">Draw a card</a></li>
+    <li><a class="dropdown-item" href="https://tarotbot.cards/explore">Explore the cards</a></li>
+  </ul>
+    </div>
+  </div>
+</nav>
  <!-- Sticky Bar -->
  <div class="container-fluid banner">
 
@@ -91,7 +98,7 @@
     <div class="row justify-content-center">
      <div class="col-md-3 order-md-1 order-sm-1 order-2">
        <div class="text-center">
-       <img src="" class="img-fluid rounded" id="cardArt" alt="A shirtless person with long, pastel blue hair looks at a flower held in their right hand. A magenta-colored sun shines against a bright yellow background, overlooking calm blue seas.">
+       <img src="" class="img-fluid rounded" id="cardArt" alt="">
        </div>
      </div>
  </div>

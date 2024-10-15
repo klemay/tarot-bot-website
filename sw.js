@@ -3,6 +3,7 @@ self.addEventListener('install', (e) => {
     caches.open('datastore').then((cache) => cache.addAll([
       '/index.html',
       '/card-template.html',
+      '/deck.html',
       '/explore.html',
       '/install.html',
       '/meta-tags.html',

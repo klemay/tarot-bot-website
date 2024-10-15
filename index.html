@@ -1,3 +1,5 @@
+<!doctype html>
+<html lang="en">
 <head>
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-ES9XKTWHB0"></script>
@@ -8,32 +10,120 @@
 
     gtag('config', 'G-ES9XKTWHB0');
   </script>
-  <!-- Fullstory -->
-  <script>
-  window['_fs_host'] = 'fullstory.com';
-  window['_fs_script'] = 'edge.fullstory.com/s/fs.js';
-  window['_fs_org'] = 'o-1NN0M4-na1';
-  window['_fs_namespace'] = 'FS';
-  (function(m,n,e,t,l,o,g,y){
-      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
-      g=m[e]=function(a,b,s){g.q?g.q.push([a,b,s]):g._api(a,b,s);};g.q=[];
-      o=n.createElement(t);o.async=1;o.crossOrigin='anonymous';o.src='https://'+_fs_script;
-      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
-      g.identify=function(i,v,s){g(l,{uid:i},s);if(v)g(l,v,s)};g.setUserVars=function(v,s){g(l,v,s)};g.event=function(i,v,s){g('event',{n:i,p:v},s)};
-      g.anonymize=function(){g.identify(!!0)};
-      g.shutdown=function(){g("rec",!1)};g.restart=function(){g("rec",!0)};
-      g.log = function(a,b){g("log",[a,b])};
-      g.consent=function(a){g("consent",!arguments.length||a)};
-      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
-      g.clearUserCookie=function(){};
-      g.setVars=function(n, p){g('setVars',[n,p]);};
-      g._w={};y='XMLHttpRequest';g._w[y]=m[y];y='fetch';g._w[y]=m[y];
-      if(m[y])m[y]=function(){return g._w[y].apply(this,arguments)};
-      g._v="1.3.0";
-  })(window,document,window['_fs_namespace'],'script','user');
-  </script>
-<meta charset="utf-8">
 <title>Tarot Bot</title>
+
+<!-- Current date, time, and card -->
+<script>
+  function loadDaily() {
+    displayCurrentDate()
+    displayDailyCard()
+  }
+
+  function displayCurrentDate() {
+      const date = new Date();
+      
+      // Array of days and months for formatting
+      const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+      const months = [
+          "January", "February", "March", "April", "May", "June", 
+          "July", "August", "September", "October", "November", "December"
+      ];
+      
+      // Get the day of the week, month, date, and year
+      const dayOfWeek = days[date.getDay()];
+      const month = months[date.getMonth()];
+      const day = date.getDate();
+      const year = date.getFullYear();
+      
+      // Format the date as "Tuesday, October 15, 2024"
+      const formattedDate = `${dayOfWeek}, ${month} ${day}, ${year}`;
+      
+      // Display the formatted date in the HTML element with ID "current-date"
+      document.getElementById("current-date").textContent = formattedDate;
+  }
+
+  function displayDailyCard()
+  {
+    fetch( 'https://tarot-bot-api.vercel.app/daily' )
+    .then( ( response ) => response.json() )
+    .then( ( data ) =>
+    {
+        let card = data.response.card;
+
+        let cardNameElement = document.getElementById( "cardName" );
+        cardNameElement.innerHTML = card.title + ( card.reversed ? " (in reverse)" : "" );
+
+        let cardEmojiElement = document.getElementById( "cardEmoji" );
+        cardEmojiElement.innerHTML = card.emoji;
+
+        let cardArtElement = document.getElementById( "cardToday" );
+        cardArtElement.src = card.image;
+        cardArtElement.alt = card.description;
+
+        let keywordsElement = document.getElementById( "keywords" );
+        keywordsElement.innerHTML = card.keywords;
+
+        let descriptionElement = document.getElementById( "description" );
+        descriptionElement.innerHTML = card.description;
+
+        let question1Element = document.getElementById( "question1" );
+        question1Element.innerHTML = card.questions[0];
+
+        let question2Element = document.getElementById( "question2" );
+        question2Element.innerHTML = card.questions[1];
+
+        let question3Element = document.getElementById( "question3" );
+        question3Element.innerHTML = card.questions[2];
+    });
+  }
+  
+  // Run the function when the page loads
+  window.onload = loadDaily;
+</script>
+<!-- Fullstory -->
+<script>
+window['_fs_host'] = 'fullstory.com';
+window['_fs_script'] = 'edge.fullstory.com/s/fs.js';
+window['_fs_org'] = 'o-1NN0M4-na1';
+window['_fs_namespace'] = 'FS';
+(function(m,n,e,t,l,o,g,y){
+    if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+    g=m[e]=function(a,b,s){g.q?g.q.push([a,b,s]):g._api(a,b,s);};g.q=[];
+    o=n.createElement(t);o.async=1;o.crossOrigin='anonymous';o.src='https://'+_fs_script;
+    y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+    g.identify=function(i,v,s){g(l,{uid:i},s);if(v)g(l,v,s)};g.setUserVars=function(v,s){g(l,v,s)};g.event=function(i,v,s){g('event',{n:i,p:v},s)};
+    g.anonymize=function(){g.identify(!!0)};
+    g.shutdown=function(){g("rec",!1)};g.restart=function(){g("rec",!0)};
+    g.log = function(a,b){g("log",[a,b])};
+    g.consent=function(a){g("consent",!arguments.length||a)};
+    g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+    g.clearUserCookie=function(){};
+    g.setVars=function(n, p){g('setVars',[n,p]);};
+    g._w={};y='XMLHttpRequest';g._w[y]=m[y];y='fetch';g._w[y]=m[y];
+    if(m[y])m[y]=function(){return g._w[y].apply(this,arguments)};
+    g._v="1.3.0";
+})(window,document,window['_fs_namespace'],'script','user');
+</script>
+
+<!-- Meta tags -->
+<meta charset="utf-8">
+<meta name="viewport" content="initial-scale=1">
+<meta name="description" content="Get a tarot reading or install our bot">
+<meta name="keywords" content="tarot,indie tarot, tarot bot">
+<script>
+  if ('serviceWorker' in navigator) {
+  navigator.serviceWorker
+    .register('/sw.js')
+    .then(() => { console.log('Service Worker Registered'); });
+}
+</script>
+<!-- Bootstrap CSS -->
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+<!-- Custom CSS -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/index.css">
+
 <link rel="manifest" href="manifest.json">
 <script>
   if ('serviceWorker' in navigator) {
@@ -43,7 +133,83 @@
 }
 </script>
 </head>
+
 <body>
+ <!-- Navigation -->
+ <nav class="navbar">
+  <div class="container">
+    <a class="navbar-brand" href="https://tarotbot.cards">Tarot Bot</a>
+    <div class="dropdown">
+      <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Menu</button>
+    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-sm-start dropdown-menu-md-start dropdown-lg-start">
+    <li><a class="dropdown-item" href="https://tarotbot.cards">Home</a></li>
+    <li><a class="dropdown-item" href="https://tarotbot.cards/install">Install Tarot Bot</a></li>
+    <li><a class="dropdown-item" href="https://tarotbot.cards/reading">Draw a card</a></li>
+    <li><a class="dropdown-item" href="https://tarotbot.cards/explore">Explore the cards</a></li>
+  </ul>
+    </div>
+  </div>
+</nav>
+<!-- Sticky Bar -->
+<div class="container-fluid banner">
 
+    <p class="text-center banner-text">Want a physical tarot deck with Tarot Bot art? <a href="https://www.kickstarter.com/projects/klemay/tarot-bot-the-official-deck">Back our Kickstarter</a>!</p>
 
+</div>
+<!-- Page Content -->
+<div class="container">
+  <div class="row text-center">
+  <h1>Card of the Day</h1>
+  <p id="current-date"></p>
+  </div>
+
+   <div class="row justify-content-center text-center">
+    <h2 id="cardName">The Fool</h2>
+  </div>
+
+    <div class="row justify-content-center text-center">
+    <h3 id="cardEmoji">🜁🌀🃏👻⛰️🗺️</h3>
+  </div>
+  <div class="row justify-content-center">
+    <div class="col-md-3 text-center">
+    <img src="images/cardBack.jpg" class="img-fluid rounded" id="cardToday">
+    </div>
+    </div>
+
+   <div class="row text-center justify-content-center">
+    <p id="keywords">keyword1, keyword2, keyword3</p>
+  </div>
+
+   <div class="row justify-content-center" id="cardContent" style="display: block;">
+    <div class="col-12">
+    <h2>Description</h2>
+    <p id="description">A shirtless person with long, pastel blue hair looks at a flower held in their right hand. A magenta-colored sun shines against a bright yellow background, overlooking calm blue seas.</p>
+
+   <h2>Reflection questions</h2>
+
+      <ul>
+        <li id="question1">What opportunities am I overlooking due to fear of the unknown?</li>
+        <li id="question2">Am I taking risks or playing it safe? Is there a balance between the two?</li>
+        <li id="question3">What areas of my life could benefit from more spontaneity, curiosity, and creativity?</li>
+      </ul>
+
+    </div>
+    <div class="row">
+      <div class="col justify-content-center d-flex">
+        <a href="#" class="btn btn-primary" id="learnMore">Learn More</a>
+      </div>
+    </div>
+      </div>
+    </div>
+ <!-- Footer -->
+<footer>
+  <div class="container">
+    <p class="text-center">Card art by <a href="http://iasminomarata.com/">Iasmin Omar Ata</a></p>
+    <p>Have a question or suggestion for improving Tarot Bot? Need help with the Slack or Discord integration? Contact <a href="https://bsky.app/profile/klemay.bsky.social">@klemay</a> or <a href="https://bsky.app/profile/calamitynolan.bsky.social">@calamitynolan</a>. Not on Bluesky? <a href="mailto:hello@tarotbot.cards">Email us!</a></p>
+  </div>
+</footer>
+
+<!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
+</html>

@@ -21,3 +21,8 @@ img {
   margin-top: 2em;
   width: 300px;
 }
+@media (max-width: 767px) {
+  #cardBack {
+    height: 20em;
+  }
+}

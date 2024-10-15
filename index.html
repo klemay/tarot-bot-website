@@ -14,6 +14,11 @@
 
 <!-- Current date and time -->
 <script>
+  function loadDaily() {
+    displayCurrentDate()
+    displayDailyCard()
+  }
+
   function displayCurrentDate() {
       const date = new Date();
       
@@ -36,9 +41,48 @@
       // Display the formatted date in the HTML element with ID "current-date"
       document.getElementById("current-date").textContent = formattedDate;
   }
+
+  function displayDailyCard()
+  {
+    console.log('displayDailyCard')
+
+    fetch( 'https://tarot-bot-api.vercel.app/daily' )
+    .then( ( response ) => response.json() )
+    .then( ( data ) =>
+    {
+        console.log(JSON.stringify(data));
+
+        let card = data.response.card;
+
+        let cardNameElement = document.getElementById( "cardName" );
+        cardNameElement.innerHTML = card.title + ( card.reversed ? " (in reverse)" : "" );
+
+        let cardEmojiElement = document.getElementById( "cardEmoji" );
+        cardEmojiElement.innerHTML = card.emoji;
+
+        let cardArtElement = document.getElementById( "cardToday" );
+        cardArtElement.src = card.image;
+        cardArtElement.alt = card.description;
+
+        let keywordsElement = document.getElementById( "keywords" );
+        keywordsElement.innerHTML = card.keywords;
+
+        let descriptionElement = document.getElementById( "description" );
+        descriptionElement.innerHTML = card.description;
+
+        let question1Element = document.getElementById( "question1" );
+        question1Element.innerHTML = card.questions[0];
+
+        let question2Element = document.getElementById( "question2" );
+        question2Element.innerHTML = card.questions[1];
+
+        let question3Element = document.getElementById( "question3" );
+        question3Element.innerHTML = card.questions[2];
+    });
+  }
   
   // Run the function when the page loads
-  window.onload = displayCurrentDate;
+  window.onload = loadDaily;
 </script>
 <!-- Fullstory -->
 <script>
@@ -84,7 +128,14 @@ window['_fs_namespace'] = 'FS';
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/index.css">
 
-
+<link rel="manifest" href="manifest.json">
+<script>
+  if ('serviceWorker' in navigator) {
+  navigator.serviceWorker
+    .register('/sw.js')
+    .then(() => { console.log('Service Worker Registered'); });
+}
+</script>
 </head>
 
 <body>

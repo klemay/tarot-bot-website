@@ -1,0 +1,21 @@
+h1 {
+    margin-bottom: 0.5em;
+}
+h3 {
+    margin-bottom: 1em;
+}
+#cardToday {
+    margin-bottom: 1em;
+}
+#learnMore {
+    margin-top: 1em;
+}
+@media (max-width: 767px) {
+    #cardToday {
+      height: 20em;
+    }
+    #cardArt
+    {
+        height: 20em;
+    }
+  }

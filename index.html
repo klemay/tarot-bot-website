@@ -44,14 +44,10 @@
 
   function displayDailyCard()
   {
-    console.log('displayDailyCard')
-
     fetch( 'https://tarot-bot-api.vercel.app/daily' )
     .then( ( response ) => response.json() )
     .then( ( data ) =>
     {
-        console.log(JSON.stringify(data));
-
         let card = data.response.card;
 
         let cardNameElement = document.getElementById( "cardName" );

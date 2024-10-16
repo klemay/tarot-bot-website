@@ -74,6 +74,9 @@
 
         let question3Element = document.getElementById( "question3" );
         question3Element.innerHTML = card.questions[2];
+
+        let cardURL = document.getElementById("learnMore")
+        cardURL.href = card.more;
     });
   }
   
@@ -194,6 +197,9 @@ window['_fs_namespace'] = 'FS';
       </ul>
 
     </div>
+      </div>
+      <div class="text-center justify-content-center">
+        <a href="" class="btn btn-primary" id="learnMore">Learn More</a>
       </div>
     </div>
  <!-- Footer -->

@@ -83,6 +83,15 @@
   // Run the function when the page loads
   window.onload = loadDaily;
 </script>
+<!-- iPhone banner -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    var isAppleDevice = /iPhone|iPad/i.test(navigator.userAgent);
+    if (isAppleDevice) {
+        document.getElementById("iphoneBanner").style.display = "block";
+    }
+});
+</script>
 <!-- Fullstory -->
 <script>
 window['_fs_host'] = 'fullstory.com';
@@ -203,7 +212,15 @@ window['_fs_namespace'] = 'FS';
         <a href="" class="btn btn-primary" id="learnMore">Learn More</a>
       </div>
     </div>
- <!-- Footer -->
+<!-- iOS Banner-->
+ <div class="container" id="iphoneBanner">
+  <div class="row">
+    <div class="justify-content-center">
+      <p class="instructions text-center">Want the Tarot Bot daily card added to your homescreen? Tap <img src="images/share-icon.png" id="shareIcon" alt="The Share icon that appears at the bottom of the browser on iPhones"> in your browser menu bar, then scroll down and tap Add to Home Screen.</p>
+    </div>
+  </div>
+ </div>
+<!-- Footer -->
 <footer>
   <div class="container">
     <p class="text-center">Card art by <a href="http://iasminomarata.com/">Iasmin Omar Ata</a></p>

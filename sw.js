@@ -109,6 +109,7 @@ self.addEventListener('install', (e) => {
       '/images/',
       '/images/cardBack.jpg',
       '/images/icon.png',
+      '/images/dark-icon.png'
     ])),
   );
 });

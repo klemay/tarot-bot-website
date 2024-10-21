@@ -15,14 +15,32 @@
 
 <!-- Current date, time, and card -->
 <script>
+  var date = new Date()
+
   function loadDaily() {
+    setDate()
     displayCurrentDate()
     displayDailyCard()
   }
 
-  function displayCurrentDate() {
-      const date = new Date();
+  function setDate() {
+    const url = location.toString()
+
+    if( url.includes('date') )
+    {
+      // from https://stackoverflow.com/a/50747608
+      var params=[];s=url.split('?');s=s[1].split('&');for(i=0;i<s.length;i++){u=s[i].split('=');params[u[0]]=u[1];}
       
+      const tempDate = new Date( params['date'] + 'T00:00:00' )
+
+      if( !isNaN( tempDate ) )
+      {      
+        date = tempDate
+      }
+    }
+  }
+
+  function displayCurrentDate() {      
       // Array of days and months for formatting
       const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
       const months = [
@@ -45,7 +63,7 @@
 
   function displayDailyCard()
   {
-    fetch( 'https://tarot-bot-api.vercel.app/daily?date=' + (new Date()).toLocaleDateString("en-US").replace(/\//g, '') )
+    fetch( 'https://tarot-bot-api.vercel.app/daily?date=' + date.toLocaleDateString("en-US").replace(/\//g, '') )
     .then( ( response ) => response.json() )
     .then( ( data ) =>
     {

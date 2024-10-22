@@ -18,13 +18,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Loop until we reach March 2021
         while (year > 2021 || (year === 2021 && month >= 2)) {
-            // Create a year container if the first month of the year is reached
             let yearDiv = document.querySelector(`.year[data-year="${year}"]`);
             if (!yearDiv) {
                 yearDiv = document.createElement('div');
                 yearDiv.classList.add('year');
                 yearDiv.setAttribute('data-year', year);
-                yearDiv.innerHTML = `<h3>${year}</h3>`;
+                yearDiv.innerHTML = `<h3 class="yearName">${year}</h3>`;
                 calendarContainer.appendChild(yearDiv);
             }
 
@@ -33,42 +32,40 @@ document.addEventListener('DOMContentLoaded', function () {
                 "July", "August", "September", "October", "November", "December"
             ];
 
-            // Create a month container
             const monthDiv = document.createElement('div');
             monthDiv.classList.add('month');
-            monthDiv.innerHTML = `<h4>${monthNames[month]}</h4>`;
+            monthDiv.innerHTML = `<h4 class="monthName">${monthNames[month]}</h4>`;
             yearDiv.appendChild(monthDiv);
 
-            // Get the number of days in the current month
             const daysInMonth = getDaysInMonth(year, month);
 
-            // Loop through the days of the month
+            // Create a row container for the days
+            const daysRow = document.createElement('div');
+            daysRow.classList.add('row');
+            monthDiv.appendChild(daysRow);
+
             for (let day = daysInMonth; day >= 1; day--) {
-                    // If it's March 2021 and before March 15, skip the day
-    if (year === 2021 && month === 2 && day < 15) {
-        continue;
-    }
-                // If it's the current month and year, only show up to the current day
+                if (year === 2021 && month === 2 && day < 15) {
+                    continue;
+                }
                 if (year === currentYear && month === currentMonth && day > currentDay) {
                     continue;
                 }
 
-                // Create a day container
+                // Create a day container with col-3 to have four columns per row
                 const dayDiv = document.createElement('div');
-                dayDiv.classList.add('day');
+                dayDiv.classList.add('col-6', 'col-md-3', 'day');
                 dayDiv.innerHTML = `<p>${day}</p>`;
-                monthDiv.appendChild(dayDiv);
+                daysRow.appendChild(dayDiv);
             }
 
-            // Move to the previous month
             month--;
             if (month < 0) {
-                month = 11; // December
-                year--;     // Move to the previous year
+                month = 11;
+                year--;
             }
         }
     }
 
-    // Generate the reverse calendar on page load
     generateReverseCalendar();
 });

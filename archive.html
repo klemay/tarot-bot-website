@@ -95,8 +95,8 @@ window['_fs_namespace'] = 'FS';
 <div class="row text-center">
     <h1>Archive</h1>
 </div>
-<div class="row">
-    <div class="col-md-6">
+<div class="row jumpTo">
+    <div class="col-md-4">
         <!-- Year Dropdown -->
         <label for="yearDropdown" class="form-label">Select Year:</label>
         <select id="yearDropdown" class="form-select">
@@ -104,13 +104,17 @@ window['_fs_namespace'] = 'FS';
             <!-- Year options will be populated via JavaScript -->
         </select>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-4">
         <!-- Month Dropdown -->
         <label for="monthDropdown" class="form-label">Select Month:</label>
         <select id="monthDropdown" class="form-select" disabled>
             <option selected disabled>Select a month</option>
             <!-- Month options will be populated via JavaScript -->
         </select>
+    </div>
+    <div class="col-md-4 d-flex">
+       <br>
+        <button class="btn btn-outline-primary disabled" id="goButton">Go</button>
     </div>
 </div>
 <div class="row">
@@ -131,6 +135,6 @@ window['_fs_namespace'] = 'FS';
 <!-- Dropdowns JS -->
 <script src="dropdowns.js"></script>
 <!-- Archive JS-->
- <script src="archive.js"></script>
+ <script src="archive2.js"></script>
 </body>
 </html>

@@ -1,3 +1,27 @@
 .yearName {
     font-size: 2em;
 }
+.month {
+    margin-bottom: 0.75em;
+}
+.jumpTo {
+    margin-bottom: 4em;
+}
+.form-label {
+    display: none;
+}
+.daysRow {
+    margin-bottom: 2em;
+}
+.dateName {
+    margin-bottom: 2em;
+}
+.dailyCard:hover {
+    opacity: .4;
+}
+
+@media (max-width: 720px) {
+    .form-select {
+        margin-bottom: 1em;
+    }
+  }

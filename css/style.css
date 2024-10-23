@@ -40,6 +40,10 @@ body {
   background-color: #442a51;
   border: 2px solid;
 }
+.btn-outline-primary {
+  color:#fff!important;
+  border-color: #fff!important;
+}
 .dropdown-toggle {
   background-color: #442a51;
   border: 2px solid;

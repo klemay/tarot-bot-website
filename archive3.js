@@ -1,96 +1,130 @@
-// https://api.tarotbot.cards/archive?offset=0&limit=100
-
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', () => {
     const calendarContainer = document.getElementById('calendarContainer');
-    const apiBaseUrl = 'https://tarot-bot-api.vercel.app/archive';
+    const apiEndpoint = 'https://api.tarotbot.cards/archive';
+    let offset = 0;
+    const loadBatchSize = 100;
+    let currentYear = null;
+    let currentMonth = null;
+    const imageMap = new Map(); // Stores image data for each date
 
-    const currentYear = new Date().getFullYear();
-    const currentMonth = new Date().getMonth();
-    const currentDay = new Date().getDate();
-
-    function getDaysInMonth(year, month) {
-        return new Date(year, month + 1, 0).getDate();
-    }
-
-    async function fetchCardForDate(date) {
-        try {
-            const response = await fetch(`${apiBaseUrl}?date=${date}`);
-            if (!response.ok) {
-                console.error('Failed to fetch card for date:', date);
-                return null;
-            }
-            const data = await response.json();
-            console.log('Card data for', date, ':', data); // Debug log
-            return data.response.card; // Accessing card inside response
-        } catch (error) {
-            console.error('Error fetching card for date:', date, error);
-            return null;
-        }
-    }
-
-    function formatDateForApi(day, month, year) {
-        const monthStr = String(month + 1).padStart(2, '0');
-        const dayStr = String(day).padStart(2, '0');
-        return `${monthStr}${dayStr}${year}`;
-    }
-
-    async function generateReverseCalendar() {
-        let year = currentYear;
-        let month = currentMonth;
-
-        while (year > 2021 || (year === 2021 && month >= 2)) {
-            let yearDiv = document.querySelector(`.year[data-year="${year}"]`);
-            if (!yearDiv) {
-                yearDiv = document.createElement('div');
-                yearDiv.classList.add('year');
-                yearDiv.setAttribute('data-year', year);
-                yearDiv.innerHTML = `<h3 class="yearName" id="${year}">${year}</h3>`;
-                calendarContainer.appendChild(yearDiv);
-            }
-
-            const monthNames = [
-                "January", "February", "March", "April", "May", "June",
-                "July", "August", "September", "October", "November", "December"
-            ];
-
-            const monthDiv = document.createElement('div');
-            monthDiv.classList.add('month');
-            monthDiv.innerHTML = `<h4 class="monthName" id="${monthNames[month]}${year}">${monthNames[month]} ${year}</h4>`;
-            yearDiv.appendChild(monthDiv);
-
-            const daysInMonth = getDaysInMonth(year, month);
-            const daysRow = document.createElement('div');
-            daysRow.classList.add('row', 'daysRow');
-            monthDiv.appendChild(daysRow);
-
-            for (let day = daysInMonth; day >= 1; day--) {
-                if (year === 2021 && month === 2 && day < 15) continue;
-                if (year === currentYear && month === currentMonth && day > currentDay) continue;
-
-                const formattedDate = formatDateForApi(day, month, year);
-                const dayDiv = document.createElement('div');
-                dayDiv.classList.add('col-6', 'col-md-3', 'day');
-                dayDiv.innerHTML = `<p>Loading...</p>`; // Temporary content while loading
-
-                // Fetch card data for the specific date
-                const cardData = await fetchCardForDate(formattedDate);
-                if (cardData && cardData.image) {
-                    dayDiv.innerHTML = `<a href="${cardData.more}"><img src="${cardData.image}" alt="${cardData.description}" class="img-fluid dailyCard" /></a><br/><p class="dateName text-center">${monthNames[month]} ${day}</p>`;
-                    dayDiv.setAttribute('title', `${monthNames[month]} ${day}, ${year}`);
+    // Create the year, month, and day structure for all cards initially
+    function loadCards(offset, limit) {
+        fetch(`${apiEndpoint}?offset=${offset}&limit=${limit}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.response && Array.isArray(data.response.readings)) {
+                    data.response.readings.forEach(cardData => {
+                        const cardDate = new Date(cardData.date);
+                        createDayDiv(cardDate);
+                        // Store image data for lazy loading later
+                        imageMap.set(cardDate.toISOString().split('T')[0], cardData);
+                    });
+                    offset += limit;
+                    // Continue loading until all cards are created
+                    if (data.response.readings.length === limit) {
+                        loadCards(offset, limit);
+                    }
                 } else {
-                    dayDiv.innerHTML = `<p>${day}</p>`; // Fallback content
+                    console.error('Unexpected API response format:', data);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching card data:', error);
+            });
+    }
+
+    // Create a day div for a given date, organized by year and month
+    function createDayDiv(cardDate) {
+        const year = cardDate.getFullYear();
+        const month = cardDate.toLocaleString('default', { month: 'long' });
+
+        // Create a new year section if necessary
+        if (currentYear !== year) {
+            currentYear = year;
+            const yearDiv = document.createElement('div');
+            yearDiv.className = 'year';
+            yearDiv.innerHTML = `<h2 id="${year}">${year}</h2>`;
+            calendarContainer.appendChild(yearDiv);
+        }
+
+        // Create a new month section if necessary
+        if (currentMonth !== month) {
+            currentMonth = month;
+            const monthDiv = document.createElement('div');
+            monthDiv.className = 'month';
+            monthDiv.innerHTML = `<h3 id="${month}${year}">${month}</h3>`;
+            calendarContainer.appendChild(monthDiv);
+
+            // Create a row container for day cards
+            const rowContainer = document.createElement('div');
+            rowContainer.className = 'row g-2';
+            monthDiv.appendChild(rowContainer);
+        }
+
+        // Add the day card to the current row container
+        const dayDiv = document.createElement('div');
+        dayDiv.className = 'col-3'; // 4 items per row
+        dayDiv.dataset.date = cardDate.toISOString().split('T')[0]; // Store date for later use
+
+        const dayContainer = document.createElement('div');
+        dayContainer.className = 'day';
+        dayContainer.textContent = 'Loading...'; // Placeholder content
+
+        dayDiv.appendChild(dayContainer);
+
+        // Add the dayDiv to the latest row container
+        const lastRow = calendarContainer.querySelector('.month:last-child .row:last-child');
+        lastRow.appendChild(dayDiv);
+
+        // Observe this dayDiv for lazy loading
+        observer.observe(dayDiv);
+    }
+
+    // Lazy load images when a dayDiv is in the viewport
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const dayDiv = entry.target;
+                const date = dayDiv.dataset.date;
+                const cardData = imageMap.get(date);
+
+                if (cardData) {
+                    populateDayDiv(dayDiv, cardData);
                 }
 
-                daysRow.appendChild(dayDiv);
+                // Stop observing this element once it has been loaded
+                observer.unobserve(dayDiv);
             }
+        });
+    }, { threshold: 0.1 });
 
-            month--;
-            if (month < 0) {
-                month = 11;
-                year--;
-            }
-        }
+    // Populate a day div with the actual image and link
+    function populateDayDiv(dayDiv, cardData) {
+        const dayContainer = dayDiv.querySelector('.day');
+        dayContainer.innerHTML = ''; // Clear placeholder content
+
+        const img = document.createElement('img');
+        img.src = cardData.image;
+        img.alt = `Card for ${cardData.date}`;
+        img.className = 'img-fluid';
+
+        // Format the date as "Month Day, Year" for the title attribute
+        const cardDate = new Date(cardData.date);
+        const formattedDate = cardDate.toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        });
+        img.title = formattedDate;
+
+        const link = document.createElement('a');
+        link.href = cardData.more;
+        link.target = '_blank';
+        link.appendChild(img);
+
+        dayContainer.appendChild(link);
     }
 
-    generateReverseCalendar();
+    // Initial load
+    loadCards(offset, loadBatchSize);
 });

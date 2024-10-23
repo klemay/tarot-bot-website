@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const yearDropdown = document.getElementById('yearDropdown');
     const monthDropdown = document.getElementById('monthDropdown');
-    const   
+     
  goButton = document.getElementById('goButton');
 
     function populateYearDropdown() {

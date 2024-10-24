@@ -5,10 +5,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadBatchSize = 100;
     let currentYear = null;
     let currentMonth = null;
-    const imageMap = new Map(); // Stores image data for each date
+    const imageMap = new Map();
+    let isLoading = false; // Flag to prevent multiple API calls
 
-    // Create the year, month, and day structure for all cards initially
     function loadCards(offset, limit) {
+        if (isLoading) return; // If a call is already in progress, do nothing
+        isLoading = true; // Set the flag to indicate a call is in progress
+
         fetch(`${apiEndpoint}?offset=${offset}&limit=${limit}`)
             .then(response => response.json())
             .then(data => {
@@ -16,13 +19,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     data.response.readings.forEach(cardData => {
                         const cardDate = new Date(cardData.date);
                         createDayDiv(cardDate);
-                        // Store image data for lazy loading later
                         imageMap.set(cardDate.toISOString().split('T')[0], cardData);
                     });
-                    offset += limit;
-                    // Continue loading until all cards are created
+
+                    offset += limit; // Update the offset for the next batch
+
+                    // Set up a trigger to load more when reaching the last div
                     if (data.response.readings.length === limit) {
-                        loadCards(offset, limit);
+                        setupScrollListener();
                     }
                 } else {
                     console.error('Unexpected API response format:', data);
@@ -30,15 +34,16 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .catch(error => {
                 console.error('Error fetching card data:', error);
+            })
+            .finally(() => {
+                isLoading = false; // Reset the flag once the call is complete
             });
     }
 
-    // Create a day div for a given date, organized by year and month
     function createDayDiv(cardDate) {
         const year = cardDate.getFullYear();
         const month = cardDate.toLocaleString('default', { month: 'long' });
 
-        // Create a new year section if necessary
         if (currentYear !== year) {
             currentYear = year;
             const yearDiv = document.createElement('div');
@@ -47,7 +52,6 @@ document.addEventListener('DOMContentLoaded', () => {
             calendarContainer.appendChild(yearDiv);
         }
 
-        // Create a new month section if necessary
         if (currentMonth !== month) {
             currentMonth = month;
             const monthDiv = document.createElement('div');
@@ -55,32 +59,26 @@ document.addEventListener('DOMContentLoaded', () => {
             monthDiv.innerHTML = `<h3 id="${month}${year}">${month}</h3>`;
             calendarContainer.appendChild(monthDiv);
 
-            // Create a row container for day cards
             const rowContainer = document.createElement('div');
             rowContainer.className = 'row g-2';
             monthDiv.appendChild(rowContainer);
         }
 
-        // Add the day card to the current row container
         const dayDiv = document.createElement('div');
-        dayDiv.className = 'col-3'; // 4 items per row
-        dayDiv.dataset.date = cardDate.toISOString().split('T')[0]; // Store date for later use
+        dayDiv.className = 'col-3';
+        dayDiv.dataset.date = cardDate.toISOString().split('T')[0];
 
         const dayContainer = document.createElement('div');
         dayContainer.className = 'day';
-        dayContainer.textContent = 'Loading...'; // Placeholder content
+        dayContainer.textContent = 'Loading...';
 
         dayDiv.appendChild(dayContainer);
-
-        // Add the dayDiv to the latest row container
         const lastRow = calendarContainer.querySelector('.month:last-child .row:last-child');
         lastRow.appendChild(dayDiv);
 
-        // Observe this dayDiv for lazy loading
         observer.observe(dayDiv);
     }
 
-    // Lazy load images when a dayDiv is in the viewport
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -91,29 +89,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (cardData) {
                     populateDayDiv(dayDiv, cardData);
                 }
-
-                // Stop observing this element once it has been loaded
                 observer.unobserve(dayDiv);
             }
         });
     }, { threshold: 0.1 });
 
-    // Populate a day div with the actual image and link
     function populateDayDiv(dayDiv, cardData) {
         const dayContainer = dayDiv.querySelector('.day');
-        dayContainer.innerHTML = ''; // Clear placeholder content
+        dayContainer.innerHTML = '';
 
         const img = document.createElement('img');
         img.src = cardData.image;
         img.alt = `Card for ${cardData.date}`;
         img.className = 'img-fluid';
 
-        // Format the date as "Month Day, Year" for the title attribute
         const cardDate = new Date(cardData.date);
-        const formattedDate = cardDate.toLocaleDateString('en-US', { 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric' 
+        const formattedDate = cardDate.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
         });
         img.title = formattedDate;
 
@@ -123,6 +117,19 @@ document.addEventListener('DOMContentLoaded', () => {
         link.appendChild(img);
 
         dayContainer.appendChild(link);
+    }
+
+    function setupScrollListener() {
+        const lastDiv = calendarContainer.querySelector('.col-3:last-child');
+        if (lastDiv) {
+            const lastDivObserver = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting && !isLoading) {
+                    lastDivObserver.unobserve(lastDiv);
+                    loadCards(offset, loadBatchSize);
+                }
+            });
+            lastDivObserver.observe(lastDiv);
+        }
     }
 
     // Initial load

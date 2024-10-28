@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(data => {
                 if (data.response && Array.isArray(data.response.readings)) {
                     data.response.readings.forEach(cardData => {
-                        const cardDate = new Date(cardData.date);
+                        const cardDate = new Date(cardData.dateShort);
                         createDayDiv(cardDate);
                         imageMap.set(cardDate.toISOString().split('T')[0], cardData);
                     });
@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const dayDiv = document.createElement('div');
         dayDiv.className = 'col-3';
-        dayDiv.dataset.date = cardDate.toISOString().split('T')[0];
+        dayDiv.dataset.dateShort = cardDate.toISOString().split('T')[0];
 
         const dayContainer = document.createElement('div');
         dayContainer.className = 'day';
@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 const dayDiv = entry.target;
-                const date = dayDiv.dataset.date;
+                const date = dayDiv.dataset.dateShort;
                 const cardData = imageMap.get(date);
 
                 if (cardData) {
@@ -99,10 +99,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const img = document.createElement('img');
         img.src = cardData.image;
-        img.alt = `Card for ${cardData.date}`;
+        img.alt = `Card for ${cardData.dateShort}`;
         img.className = 'img-fluid';
 
-        const cardDate = new Date(cardData.date);
+        const cardDate = new Date(cardData.dateShort);
         const formattedDate = cardDate.toLocaleDateString('en-US', {
             year: 'numeric',
             month: 'long',

@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const calendarContainer = document.getElementById('calendarContainer');
     const apiEndpoint = 'https://api.tarotbot.cards/archive';
     let offset = 0;
-    const loadBatchSize = 100;
+    const loadBatchSize = 101;
     let currentYear = null;
     let currentMonth = null;
     const imageMap = new Map();
@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const dayDiv = document.createElement('div');
-        dayDiv.className = 'col-3';
+        dayDiv.className = 'col-6 col-md-3';
         dayDiv.dataset.dateShort = cardDate.toISOString().split('T')[0];
 
         const dayContainer = document.createElement('div');
@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const img = document.createElement('img');
         img.src = cardData.image;
-        img.alt = `Card for ${cardData.dateShort}`;
+        img.alt = `Card for ${cardData.dateShort}: ${cardData.title} ${cardData.reversed ? '(reversed)' : ''}`;
         img.className = 'img-fluid';
 
         const cardDate = new Date(cardData.dateShort);
@@ -116,6 +116,11 @@ document.addEventListener('DOMContentLoaded', () => {
         link.appendChild(img);
 
         dayContainer.appendChild(link);
+
+        const dateParagraph = document.createElement('p');
+        dateParagraph.textContent = `${formattedDate}`;
+        dateParagraph.className = 'cardLabel'
+        dayContainer.appendChild(dateParagraph);
     }
 
     // Initial load

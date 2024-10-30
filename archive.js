@@ -1,71 +1,138 @@
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', () => {
     const calendarContainer = document.getElementById('calendarContainer');
+    const apiEndpoint = 'https://api.tarotbot.cards/archive';
+    let offset = 0;
+    const loadBatchSize = 101;
+    let currentYear = null;
+    let currentMonth = null;
+    const imageMap = new Map();
+    let isLoading = false; // Flag to prevent multiple API calls
 
-    // Get the current date
-    const currentYear = new Date().getFullYear();
-    const currentMonth = new Date().getMonth(); // 0-based (0 = January, 11 = December)
-    const currentDay = new Date().getDate();
+    function loadCards(offset, limit) {
+        // console.log("isLoading? " + isLoading)
 
-    // Function to get the number of days in a given month and year
-    function getDaysInMonth(year, month) {
-        return new Date(year, month + 1, 0).getDate(); // Month + 1 to get the last day of the current month
+        if (isLoading) return; // If a call is already in progress, do nothing
+        isLoading = true; // Set the flag to indicate a call is in progress
+
+        // console.log("fetching: " + `${apiEndpoint}?offset=${offset}&limit=${limit}`)
+
+        fetch(`${apiEndpoint}?offset=${offset}&limit=${limit}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.response && Array.isArray(data.response.readings)) {
+                    data.response.readings.forEach(cardData => {
+                        const cardDate = new Date(cardData.dateShort);
+                        createDayDiv(cardDate);
+                        imageMap.set(cardDate.toISOString().split('T')[0], cardData);
+                    });
+
+                    offset += limit; // Update the offset for the next batch
+                } else {
+                    console.error('Unexpected API response format:', data);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching card data:', error);
+            })
+            .finally(() => {
+                isLoading = false; // Reset the flag once the call is complete
+            });
     }
 
-    // Function to generate the calendar from the current month back to March 2021 in reverse chronological order
-    function generateReverseCalendar() {
-        let year = currentYear;
-        let month = currentMonth;
+    function createDayDiv(cardDate) {
+        const year = cardDate.getFullYear();
+        const month = cardDate.toLocaleString('default', { month: 'long' });
 
-        // Loop until we reach March 2021
-        while (year > 2021 || (year === 2021 && month >= 2)) {
-            let yearDiv = document.querySelector(`.year[data-year="${year}"]`);
-            if (!yearDiv) {
-                yearDiv = document.createElement('div');
-                yearDiv.classList.add('year');
-                yearDiv.setAttribute('data-year', year);
-                yearDiv.innerHTML = `<h3 class="yearName">${year}</h3>`;
-                calendarContainer.appendChild(yearDiv);
-            }
-
-            const monthNames = [
-                "January", "February", "March", "April", "May", "June",
-                "July", "August", "September", "October", "November", "December"
-            ];
-
-            const monthDiv = document.createElement('div');
-            monthDiv.classList.add('month');
-            monthDiv.innerHTML = `<h4 class="monthName">${monthNames[month]}</h4>`;
-            yearDiv.appendChild(monthDiv);
-
-            const daysInMonth = getDaysInMonth(year, month);
-
-            // Create a row container for the days
-            const daysRow = document.createElement('div');
-            daysRow.classList.add('row');
-            monthDiv.appendChild(daysRow);
-
-            for (let day = daysInMonth; day >= 1; day--) {
-                if (year === 2021 && month === 2 && day < 15) {
-                    continue;
-                }
-                if (year === currentYear && month === currentMonth && day > currentDay) {
-                    continue;
-                }
-
-                // Create a day container with col-3 to have four columns per row
-                const dayDiv = document.createElement('div');
-                dayDiv.classList.add('col-6', 'col-md-3', 'day');
-                dayDiv.innerHTML = `<p>${day}</p>`;
-                daysRow.appendChild(dayDiv);
-            }
-
-            month--;
-            if (month < 0) {
-                month = 11;
-                year--;
-            }
+        if (currentYear !== year) {
+            currentYear = year;
+            const yearDiv = document.createElement('div');
+            yearDiv.className = 'year';
+            yearDiv.innerHTML = `<h2 id="${year}">${year}</h2>`;
+            calendarContainer.appendChild(yearDiv);
         }
+
+        if (currentMonth !== month) {
+            currentMonth = month;
+            const monthDiv = document.createElement('div');
+            monthDiv.className = 'month';
+            monthDiv.innerHTML = `<h3 id="${month}${year}">${month}</h3>`;
+            calendarContainer.appendChild(monthDiv);
+
+            const rowContainer = document.createElement('div');
+            rowContainer.className = 'row g-2';
+            monthDiv.appendChild(rowContainer);
+        }
+
+        const dayDiv = document.createElement('div');
+        dayDiv.className = 'col-6 col-md-3';
+        dayDiv.dataset.dateShort = cardDate.toISOString().split('T')[0];
+
+        const dayContainer = document.createElement('div');
+        dayContainer.className = 'day';
+        dayContainer.textContent = 'Loading...';
+
+        dayDiv.appendChild(dayContainer);
+        const lastRow = calendarContainer.querySelector('.month:last-child .row:last-child');
+        lastRow.appendChild(dayDiv);
+
+        observer.observe(dayDiv);
     }
 
-    generateReverseCalendar();
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const dayDiv = entry.target;
+                const date = dayDiv.dataset.dateShort;
+                const cardData = imageMap.get(date);
+
+                if (cardData) {
+                    populateDayDiv(dayDiv, cardData);
+                }
+                observer.unobserve(dayDiv);
+            }
+        });
+    }, { threshold: 0.1 });
+
+    function populateDayDiv(dayDiv, cardData) {
+        const dayContainer = dayDiv.querySelector('.day');
+        dayContainer.innerHTML = '';
+
+        const img = document.createElement('img');
+        img.src = cardData.image;
+        img.alt = `Card for ${cardData.dateShort}: ${cardData.title} ${cardData.reversed ? '(reversed)' : ''}`;
+        img.className = 'img-fluid';
+
+        const cardDate = new Date(cardData.dateShort);
+        const formattedDate = cardDate.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        img.title = formattedDate;
+
+        const link = document.createElement('a');
+        link.href = cardData.more;
+        link.target = '_blank';
+        link.appendChild(img);
+
+        dayContainer.appendChild(link);
+
+        const dateParagraph = document.createElement('p');
+        dateParagraph.textContent = `${formattedDate}`;
+        dateParagraph.className = 'cardLabel'
+        dayContainer.appendChild(dateParagraph);
+    }
+
+    // Initial load
+    loadCards(offset, loadBatchSize);
+
+    // listen for scroll event and load more images if we reach the bottom of window
+    window.addEventListener('scroll',()=>{
+        // console.log("scrolled", window.scrollY) //scrolled from top
+        // console.log(window.innerHeight) //visible part of screen
+        if(window.scrollY + window.innerHeight >= document.documentElement.scrollHeight){
+            // console.log("should load more")
+            loadCards(offset, loadBatchSize);
+        }
+    })
 });

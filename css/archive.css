@@ -29,8 +29,17 @@
 .cardLabel {
     text-align: center;
 }
+.day {
+    max-width:200px;
+}
 .day img:hover {
     opacity: .4;
+}
+.cardImage {
+   max-width: 200px;
+}
+.imgCol {
+    max-width: 220px;
 }
 #toTop {
     display: none; /* Hidden by default */

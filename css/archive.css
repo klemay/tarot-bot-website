@@ -54,4 +54,10 @@
     .form-select {
         margin-bottom: 1em;
     }
+    .imgCol {
+        max-width: 170px;
+    }
+    .cardImage {
+        max-width: 120px; 
+    }
   }

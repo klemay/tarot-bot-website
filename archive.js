@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const dayDiv = document.createElement('div');
-        dayDiv.className = 'col-6 col-md-3 imgCol';
+        dayDiv.className = 'col-4 col-md-3 imgCol';
         dayDiv.dataset.dateShort = cardDate.toISOString().split('T')[0];
 
         const dayContainer = document.createElement('div');

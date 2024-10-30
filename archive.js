@@ -2,13 +2,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const calendarContainer = document.getElementById('calendarContainer');
     const apiEndpoint = 'https://api.tarotbot.cards/archive';
     let offset = 0;
-    const loadBatchSize = 101;
+    const loadBatchSize = 100;
     let currentYear = null;
     let currentMonth = null;
     const imageMap = new Map();
     let isLoading = false; // Flag to prevent multiple API calls
 
-    function loadCards(offset, limit) {
+    function loadCards(limit) {
         // console.log("isLoading? " + isLoading)
 
         if (isLoading) return; // If a call is already in progress, do nothing
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         imageMap.set(cardDate.toISOString().split('T')[0], cardData);
                     });
 
-                    offset += limit; // Update the offset for the next batch
+                    offset += data.response.length; // Update the offset for the next batch
                 } else {
                     console.error('Unexpected API response format:', data);
                 }
@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Initial load
-    loadCards(offset, loadBatchSize);
+    loadCards(loadBatchSize);
 
     // listen for scroll event and load more images if we reach the bottom of window
     window.addEventListener('scroll',()=>{
@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // console.log(window.innerHeight) //visible part of screen
         if(window.scrollY + window.innerHeight >= document.documentElement.scrollHeight){
             // console.log("should load more")
-            loadCards(offset, loadBatchSize);
+            loadCards(loadBatchSize);
         }
     })
 });

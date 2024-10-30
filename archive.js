@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const dayDiv = document.createElement('div');
-        dayDiv.className = 'col-6 col-md-3';
+        dayDiv.className = 'col-6 col-md-3 imgCol';
         dayDiv.dataset.dateShort = cardDate.toISOString().split('T')[0];
 
         const dayContainer = document.createElement('div');
@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const img = document.createElement('img');
         img.src = cardData.image;
         img.alt = `Card for ${cardData.dateShort}: ${cardData.title} ${cardData.reversed ? '(reversed)' : ''}`;
-        img.className = 'img-fluid';
+        img.classList.add("img-fluid","cardImage","mx-auto","d-block");
 
         const cardDate = new Date(cardData.dateShort);
         const formattedDate = cardDate.toLocaleDateString('en-US', {

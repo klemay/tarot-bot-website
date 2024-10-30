@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const dateParagraph = document.createElement('p');
         dateParagraph.textContent = `${formattedDate}`;
-        dateParagraph.className = 'cardLabel'
+        dateParagraph.className = 'cardLabel text-center'
         dayContainer.appendChild(dateParagraph);
     }
 

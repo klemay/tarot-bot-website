@@ -31,6 +31,8 @@
 }
 .day {
     max-width:200px;
+    margin-left: auto;
+    margin-right: auto;
 }
 .day img:hover {
     opacity: .4;
@@ -47,8 +49,12 @@
     bottom: 20px; /* Place the button at the bottom of the page */
     right: 30px; /* Place the button 30px from the right */
     z-index: 99; /* Make sure it does not overlap */
-  }
-  
+}
+#archiveContainer {
+    max-width: 896px;
+    margin-left: auto;
+    margin-right: auto;
+}
 
 @media (max-width: 720px) {
     .form-select {

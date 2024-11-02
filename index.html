@@ -63,7 +63,7 @@
 
   function displayDailyCard()
   {
-    const dateSeed = ( date.getUTCMonth() + 1 ) * 1000000 + date.getUTCDate() * 10000 + date.getUTCFullYear()
+    const dateSeed = ( date.getMonth() + 1 ) * 1000000 + date.getDate() * 10000 + date.getFullYear()
     fetch( 'https://tarot-bot-api.vercel.app/daily?date=' + dateSeed )
     .then( ( response ) => response.json() )
     .then( ( data ) =>

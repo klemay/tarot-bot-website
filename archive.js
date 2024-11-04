@@ -136,8 +136,8 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('scroll',()=>{
         console.log("scrolled", window.scrollY) //scrolled from top
         console.log("innerHeight", window.innerHeight) //visible part of screen
-        console.log("scrollHeightd", document.documentElement.scrollHeight) //max scroll height
-        if(window.scrollY + window.innerHeight >= document.documentElement.scrollHeight){
+        console.log("scrollHeight", document.documentElement.scrollHeight) //max scroll height
+        if(window.scrollY + window.innerHeight + 1 >= document.documentElement.scrollHeight){
             console.log("should load more")
             loadCards(loadBatchSize);
         }

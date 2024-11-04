@@ -128,10 +128,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // listen for scroll event and load more images if we reach the bottom of window
     window.addEventListener('scroll',()=>{
-        // console.log("scrolled", window.scrollY) //scrolled from top
-        // console.log(window.innerHeight) //visible part of screen
+        console.log("scrolled", window.scrollY) //scrolled from top
+        console.log(window.innerHeight) //visible part of screen
         if(window.scrollY + window.innerHeight >= document.documentElement.scrollHeight){
-            // console.log("should load more")
+            console.log("should load more")
             loadCards(loadBatchSize);
         }
     })

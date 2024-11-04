@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentMonth = null;
     const imageMap = new Map();
     let isLoading = false; // Flag to prevent multiple API calls
+    const today = new Date()
 
     function loadCards(limit) {
         // console.log("isLoading? " + isLoading)
@@ -22,6 +23,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (data.response && Array.isArray(data.response.readings)) {
                     data.response.readings.forEach(cardData => {
                         const cardDate = new Date(cardData.dateShort);
+
+                        if(imageMap.size == 0 && cardDate >= today) {
+                            return;
+                        }
+
                         createDayDiv(cardDate);
                         imageMap.set(cardDate.toISOString().split('T')[0], cardData);
                     });
@@ -129,7 +135,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // listen for scroll event and load more images if we reach the bottom of window
     window.addEventListener('scroll',()=>{
         console.log("scrolled", window.scrollY) //scrolled from top
-        console.log(window.innerHeight) //visible part of screen
+        console.log("innerHeight", window.innerHeight) //visible part of screen
+        console.log("scrollHeightd", document.documentElement.scrollHeight) //max scroll height
         if(window.scrollY + window.innerHeight >= document.documentElement.scrollHeight){
             console.log("should load more")
             loadCards(loadBatchSize);

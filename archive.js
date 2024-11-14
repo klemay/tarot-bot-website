@@ -1,13 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
     const calendarContainer = document.getElementById('calendarContainer');
     const apiEndpoint = 'https://api.tarotbot.cards/archive';
-    let offset = 0;
     const loadBatchSize = 100;
     let currentYear = null;
     let currentMonth = null;
     const imageMap = new Map();
     let isLoading = false; // Flag to prevent multiple API calls
-    const today = new Date()
+    let date = new Date()
 
     function loadCards(limit) {
         // console.log("isLoading? " + isLoading)
@@ -15,24 +14,20 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isLoading) return; // If a call is already in progress, do nothing
         isLoading = true; // Set the flag to indicate a call is in progress
 
-        // console.log("fetching: " + `${apiEndpoint}?offset=${offset}&limit=${limit}`)
+        // console.log("fetching: " + ${apiEndpoint}?start=${date.toISOString().slice(0,10)}&limit=${limit}`)
 
-        fetch(`${apiEndpoint}?offset=${offset}&limit=${limit}`)
+        fetch(`${apiEndpoint}?start=${date.toISOString().slice(0,10)}&limit=${limit}`)
             .then(response => response.json())
             .then(data => {
                 if (data.response && Array.isArray(data.response.readings)) {
                     data.response.readings.forEach(cardData => {
                         const cardDate = new Date(cardData.dateShort);
 
-                        if(imageMap.size == 0 && cardDate >= today) {
-                            return;
-                        }
-
                         createDayDiv(cardDate);
-                        imageMap.set(cardDate.toISOString().split('T')[0], cardData);
+                        imageMap.set(cardDate.toISOString().slice(0,10), cardData);
                     });
 
-                    offset += data.response.length; // Update the offset for the next batch
+                    date.setDate(date.getDate() - data.response.length) // Update the start date for the next batch
                 } else {
                     console.error('Unexpected API response format:', data);
                 }
@@ -71,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const dayDiv = document.createElement('div');
         dayDiv.className = 'col-4 col-md-3 imgCol';
-        dayDiv.dataset.dateShort = cardDate.toISOString().split('T')[0];
+        dayDiv.dataset.dateShort = cardDate.toISOString().slice(0,10);
 
         const dayContainer = document.createElement('div');
         dayContainer.className = 'day';

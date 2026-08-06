@@ -1,4 +1,4 @@
-#cardName, #cardEmoji, #cardArt, #keywords, #description, #cardContent {
+#cardName, #cardEmoji, #cardArt, #keywords, #description, #cardContent, #learnMore {
   display: none;
 }
 .btn-draw {
@@ -7,10 +7,14 @@
 }
 
 h1 {
-  margin-bottom: 0.5em;
+  margin-bottom: 0em;
 }
 p {
   margin-bottom: 2em;
+}
+
+#explainerText {
+  margin-top: 1em;
 }
 
 img {
